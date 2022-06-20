@@ -13,7 +13,7 @@ from time import time
 
 print(tf.__version__)
 
-
+# 
 def create_class_dict():
     # Create a new version only including tiny 200 classes
     df = pd.read_csv('./tiny-imagenet-200/words.txt', sep='\t', header=None)
@@ -38,7 +38,7 @@ def create_val_class_dict():
     tiny_val_class_dict = {}
 
     # Create a dictionary for validation images
-    df = pd.read_csv('./tiny-imagenet-200/val/val_annotations.txt', sep='\t',
+    df = pd.read_excel('./tiny-imagenet-200/val/val_annotations.txt', sep='\t',
                      header=None)
     image_names = df[0]
     image_classes = df[1]
@@ -53,7 +53,7 @@ def create_val_class_dict():
                                    'w'),
          indent=2)
 
-
+# 幫忙分出驗證集跟測試集
 def split_val_data():
     # Split validation images to 50% early stopping and 50% hold-out testing
     val_images = glob('./tiny-imagenet-200/val/images/*.JPEG')
@@ -167,7 +167,7 @@ def prepare_for_testing(dataset, batch_size=32, cache=True):
 
     return dataset
 
-
+"""
 class TinyVGG(Model):
     """
     Tiny VGG structure is adapted from http://cs231n.stanford.edu:
@@ -214,7 +214,7 @@ class TinyVGG(Model):
 
         x = self.flatten(x)
         return self.fc(x)
-
+"""
 
 @tf.function
 def train_step(image_batch, label_batch):
@@ -254,7 +254,7 @@ HEIGHT = 64
 EPOCHS = 1000
 PATIENCE = 50
 LR = 0.001
-NUM_CLASS = 10
+NUM_CLASS = 2  # 照片的類別數
 BATCH_SIZE = 32
 
 # Create training and validation dataset
@@ -309,7 +309,7 @@ test_dataset = prepare_for_training(test_labeld_dataset,
 # tiny_vgg = TinyVGG()
 
 # Use Keras Sequential API instead, since it is easy to save the model
-filters = 10
+filters = 2 # 照片的類別數
 tiny_vgg = Sequential([
     Conv2D(filters, (3, 3), input_shape=(64, 64, 3), name='conv_1_1'),
     Activation('relu', name='relu_1_1'),
