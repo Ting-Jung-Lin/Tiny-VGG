@@ -13,47 +13,41 @@ from time import time
 
 print(tf.__version__)
 
-# 
+# 建立全部類別索引值json檔
 def create_class_dict():
     # Create a new version only including tiny 200 classes
-    df = pd.read_csv('./tiny-imagenet-200/words.txt', sep='\t', header=None)
+    df = pd.read_excel('./data/word.xlsx', sep='\t', header=None)
     keys, classes = df[0], df[1]
     class_dict = dict(zip(keys, classes))
-
+    
     tiny_class_dict = {}
     cur_index = 0
 
-    for directory in glob('./tiny-imagenet-200/train/*'):
+    for directory in glob('./data/class_2_train/*'):
         cur_key = basename(directory)
-        tiny_class_dict[cur_key] = {'class': class_dict[cur_key],
-                                    'index': cur_index}
+        tiny_class_dict[cur_key] = {'class': class_dict[cur_key],'index': cur_index}
         cur_index += 1
 
-    dump(tiny_class_dict, open('./tiny-imagenet-200/class_dict.json', 'w'),
-         indent=2)
-
-
+    dump(tiny_class_dict, open('./data/class_dict_2.json', 'w'),indent=2)
+    
+# 建立驗證集的圖片索引 json 檔
 def create_val_class_dict():
-    tiny_class_dict = load(open('./tiny-imagenet-200/class_dict.json', 'r'))
+    tiny_class_dict = load(open('./data/class_dict_2.json', 'r'))
     tiny_val_class_dict = {}
 
     # Create a dictionary for validation images
-    df = pd.read_excel('./tiny-imagenet-200/val/val_annotations.txt', sep='\t',
-                     header=None)
+    df = pd.read_excel('./data/val_annotations.xlsx', sep='\t', header=None)
     image_names = df[0]
     image_classes = df[1]
-
     for i in range(len(image_names)):
         tiny_val_class_dict[image_names[i]] = {
             'class': tiny_class_dict[image_classes[i]]['class'],
             'index': tiny_class_dict[image_classes[i]]['index'],
         }
 
-    dump(tiny_val_class_dict, open('./tiny-imagenet-200/val_class_dict.json',
-                                   'w'),
-         indent=2)
-
-# 幫忙分出驗證集跟測試集
+    dump(tiny_val_class_dict,open('./data/val_class_dict_2.json','w'),indent=2)
+"""
+# 幫忙分出驗證集跟測試集(也可以自己先分好)
 def split_val_data():
     # Split validation images to 50% early stopping and 50% hold-out testing
     val_images = glob('./tiny-imagenet-200/val/images/*.JPEG')
@@ -64,9 +58,8 @@ def split_val_data():
             copyfile(val_images[i], val_images[i].replace('images',
                                                           'val_images'))
         else:
-            copyfile(val_images[i], val_images[i].replace('images',
-                                                          'test_images'))
-
+            copyfile(val_images[i], val_images[i].replace('images', 'test_images'))
+"""
 
 def process_path_train(path):
     """
@@ -85,7 +78,7 @@ def process_path_train(path):
     # Get the class
     path = path.numpy()
     image_name = basename(path.decode('ascii'))
-    label_name = re.sub(r'(.+)_\d+\.JPEG', r'\1', image_name)
+    label_name = re.sub(r'(.+)_.+\.jpg', r'\1', image_name)
     label_index = tiny_class_dict[label_name]['index']
 
     # Convert label to one-hot encoding
@@ -169,13 +162,13 @@ def prepare_for_testing(dataset, batch_size=32, cache=True):
 
 """
 class TinyVGG(Model):
-    """
+    '''
     Tiny VGG structure is adapted from http://cs231n.stanford.edu:
         > This particular network is classifying CIFAR-10 images into one of 10
         > classes and was trained with ConvNetJS. Its exact architecture is
         > [conv-relu-conv-relu-pool]x3-fc-softmax, for a total of 17 layers and
         > 7000 parameters. It uses 3x3 convolutions and 2x2 pooling regions.
-    """
+    '''
     def __init__(self, filters=10):
         super(TinyVGG, self).__init__()
         self.conv_1_1 = Conv2D(filters, (3, 3), name='conv_1_1')
@@ -257,13 +250,16 @@ LR = 0.001
 NUM_CLASS = 2  # 照片的類別數
 BATCH_SIZE = 32
 
-# Create training and validation dataset
-tiny_class_dict = load(open('./data/class_dict_10.json', 'r'))
-tiny_val_class_dict = load(open('./data/val_class_dict_10.json', 'r'))
+create_class_dict()
+create_val_class_dict() 
 
-training_images = './data/class_10_train/*/images/*.JPEG'
-vali_images = './data/class_10_val/val_images/*.JPEG'
-test_images = './data/class_10_val/test_images/*.JPEG'
+# Create training and validation dataset
+tiny_class_dict = load(open('./data/class_dict_2.json', 'r'))
+tiny_val_class_dict = load(open('./data/val_class_dict_2.json', 'r'))
+
+training_images = './data/class_2_train/*/*.jpg'
+vali_images = './data/class_2_val/val_images/*.jpg'
+test_images = './data/class_2_val/test_images/*.jpg'
 
 # Create training dataset
 train_path_dataset = tf.data.Dataset.list_files(training_images)
@@ -309,7 +305,7 @@ test_dataset = prepare_for_training(test_labeld_dataset,
 # tiny_vgg = TinyVGG()
 
 # Use Keras Sequential API instead, since it is easy to save the model
-filters = 2 # 照片的類別數
+filters = 2  # 照片的類別數
 tiny_vgg = Sequential([
     Conv2D(filters, (3, 3), input_shape=(64, 64, 3), name='conv_1_1'),
     Activation('relu', name='relu_1_1'),
@@ -329,8 +325,8 @@ tiny_vgg = Sequential([
 
 # "Compile" the model with loss function and optimizer
 loss_object = tf.keras.losses.CategoricalCrossentropy()
-# optimizer = tf.keras.optimizers.Adam(learning_rate=LR)
-optimizer = tf.keras.optimizers.SGD(learning_rate=LR)
+optimizer = tf.keras.optimizers.Adam(learning_rate=LR)
+#optimizer = tf.keras.optimizers.SGD(learning_rate=LR)
 
 train_mean_loss = tf.keras.metrics.Mean(name='train_mean_loss')
 train_accuracy = tf.keras.metrics.CategoricalAccuracy(name='train_accuracy')
@@ -396,4 +392,3 @@ for image_batch, label_batch in test_dataset:
 template = '\ntest loss: {:.4f}, test accuracy: {:.4f}'
 print(template.format(test_mean_loss.result(),
                       test_accuracy.result() * 100))
-
