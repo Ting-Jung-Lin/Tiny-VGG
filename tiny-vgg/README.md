@@ -2,7 +2,8 @@
 以下講解若要匯入新的圖片，索引值的格式內容，也有附訓練好的 model 直接使用  
 - tiny-vgg.py 要先做出下兩個 excel 檔案  
   - val_annotations.xlsx  ：圖片檔名(包含驗證圖片及測試圖片)以及它們屬於的類別
-  <img width="500" alt="image" src="https://user-images.githubusercontent.com/85891503/174646137-bc4978e0-a7aa-4951-a0a4-a6490108ec0e.png"><img width="150" alt="image" src="https://user-images.githubusercontent.com/85891503/174645994-83a03259-9d5a-4351-9ebb-079c41d21cce.png">  
+  <img width="400" alt="image" src="https://user-images.githubusercontent.com/85891503/174646137-bc4978e0-a7aa-4951-a0a4-a6490108ec0e.png"><img width="150" alt="image" src="https://user-images.githubusercontent.com/85891503/174659114-a6a373a9-ac2d-4b47-b4a4-b10b1a632ec8.png"><img width="150" alt="image" src="https://user-images.githubusercontent.com/85891503/174659184-47e641b3-18ed-4251-adaf-13ca6bf127b9.png">
+ 
   - word.xlsx  ：  
     <img width="147" alt="image" src="https://user-images.githubusercontent.com/85891503/174652497-a85cd766-8498-43a0-82c3-cbd3985b7033.png">  
 
