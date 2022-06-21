@@ -1,5 +1,5 @@
 async function init(){
-	model =await tf.loadLayersModel("trainedModel/model.json");//放下載下來 model 的 json 檔
+	model =await tf.loadLayersModel("trainedModel/model.json");//放轉成tensorflow.js格式 model 的 .json 檔
 }
 //接收HTML傳進的圖片
 function sub(){
