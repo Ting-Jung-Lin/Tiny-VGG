@@ -1,85 +1,22 @@
-# Train a Tiny VGG
-
-This directory includes code and data to train a Tiny VGG model
-(inspired by the demo CNN in [Stanford CS231n class](http://cs231n.stanford.edu))
-on 10 everyday classes from the [Tiny ImageNet](https://tiny-imagenet.herokuapp.com).
-
-## Installation
-
-First, you want to unzip `data.zip`. The file structure would be something like:
-
+執行 tiny-vgg.py 後的步驟請參考 github：https://github.com/poloclub/cnn-explainer/tree/master/tiny-vgg  
+以下講解若要匯入新的圖片，索引值的格式內容，也有附訓練好的 model 直接使用  
+- 要先做出下兩個 excel 檔案  
+  - val_annotations.xlsx  ：圖片檔名(包含驗證圖片及測試圖片)以及它們屬於的類別
+  <img width="400" alt="image" src="https://user-images.githubusercontent.com/85891503/174646137-bc4978e0-a7aa-4951-a0a4-a6490108ec0e.png"><img width="150" alt="image" src="https://user-images.githubusercontent.com/85891503/174659114-a6a373a9-ac2d-4b47-b4a4-b10b1a632ec8.png"><img width="150" alt="image" src="https://user-images.githubusercontent.com/85891503/174659184-47e641b3-18ed-4251-adaf-13ca6bf127b9.png">
+ 
+  - word.xlsx  ：  
+    <img width="147" alt="image" src="https://user-images.githubusercontent.com/85891503/174652497-a85cd766-8498-43a0-82c3-cbd3985b7033.png">  
+- 第 250 行的 NUM_CLASS 以及 308 行的 filters 要改成自己的類別數
 ```
-.
-├── data
-│   ├── class_10_train
-│   │   ├── n01882714
-│   │   │   ├── images [500 entries exceeds filelimit, not opening dir]
-│   │   │   └── n01882714_boxes.txt
-│   │   ├── n02165456
-│   │   │   ├── images [500 entries exceeds filelimit, not opening dir]
-│   │   │   └── n02165456_boxes.txt
-│   │   ├── n02509815
-│   │   │   ├── images [500 entries exceeds filelimit, not opening dir]
-│   │   │   └── n02509815_boxes.txt
-│   │   ├── n03662601
-│   │   │   ├── images [500 entries exceeds filelimit, not opening dir]
-│   │   │   └── n03662601_boxes.txt
-│   │   ├── n04146614
-│   │   │   ├── images [500 entries exceeds filelimit, not opening dir]
-│   │   │   └── n04146614_boxes.txt
-│   │   ├── n04285008
-│   │   │   ├── images [500 entries exceeds filelimit, not opening dir]
-│   │   │   └── n04285008_boxes.txt
-│   │   ├── n07720875
-│   │   │   ├── images [500 entries exceeds filelimit, not opening dir]
-│   │   │   └── n07720875_boxes.txt
-│   │   ├── n07747607
-│   │   │   ├── images [500 entries exceeds filelimit, not opening dir]
-│   │   │   └── n07747607_boxes.txt
-│   │   ├── n07873807
-│   │   │   ├── images [500 entries exceeds filelimit, not opening dir]
-│   │   │   └── n07873807_boxes.txt
-│   │   └── n07920052
-│   │       ├── images [500 entries exceeds filelimit, not opening dir]
-│   │       └── n07920052_boxes.txt
-│   ├── class_10_val
-│   │   ├── test_images [250 entries exceeds filelimit, not opening dir]
-│   │   └── val_images [250 entries exceeds filelimit, not opening dir]
-│   ├── class_dict_10.json
-│   └── val_class_dict_10.json
-├── data.zip
-├── environment.yaml
-└── tiny-vgg.py
+data
+├── class_2_train   
+|   ├── octopus
+│   │   └── images [octopus_train * 500]
+│   └── squid
+│       └── images [squid_train * 500] 
+├── class_2_val
+|   ├── test_images [squid_test * 125、octopus_test * 125]
+|   └── val_images [squid_val * 125、octopus_val * 125]
+├── word.xlsx
+└── val_annotations.xlsx 
 ```
-
-To install all dependencies, run the following code
-
-```
-conda env create --file environment.yaml
-```
-
-## Training
-
-To train Tiny VGG on these 10 classes, run the following code
-
-```
-python tiny-vgg.py
-```
-
-After training, you will get two saved models in Keras format: `trained_tiny_vgg.h5`
-and `trained_vgg_best.h5`. The first file is the final model after training, and
-`trained_vgg_best.h5` is the model having the best validation performance.
-You can use either one for CNN Explainer.
-
-## Convert Model Format
-
-Before loading the model using *tensorflow.js*, you want to convert the model file
-from Keras `h5` format to [tensorflow.js format](https://www.tensorflow.org/js/tutorials/conversion/import_keras).
-
-```
-tensorflowjs_converter --input_format keras trained_vgg_best.h5 ./
-```
-
-Then you can put the output file `group1-shard1of1.bin` in `/public/data` and use
-*tensorflow.js* to load the trained model.
-
