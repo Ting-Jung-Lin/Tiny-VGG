@@ -1,4 +1,4 @@
-以下講解若要自己訓練模型，匯入新的圖片，索引值的格式內容。
+以下講解若要自己訓練模型，要更改的內容。
 - 要先做出下兩個 excel 檔案  
   - word.xlsx：(第一行：每個類別存放圖片的資料夾名稱、第二行：那一個資料夾的類別)  
     <img width="147" alt="image" src="https://user-images.githubusercontent.com/85891503/174652497-a85cd766-8498-43a0-82c3-cbd3985b7033.png">    
