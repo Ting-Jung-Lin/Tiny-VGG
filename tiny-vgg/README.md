@@ -8,6 +8,7 @@
     <img width="147" alt="image" src="https://user-images.githubusercontent.com/85891503/174652497-a85cd766-8498-43a0-82c3-cbd3985b7033.png">  
 - 第 250 行的 NUM_CLASS 以及 308 行的 filters 要改成自己的類別數
 ```
+data.zip 的資料夾架構
 data
 ├── class_2_train   
 |   ├── octopus
