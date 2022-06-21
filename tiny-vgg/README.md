@@ -1,4 +1,3 @@
-此資料夾為訓練 model，若要直接使用訓練好的model，請使用 model+webdemo 資料夾的內容。  
 執行 tiny-vgg.py 後的步驟請參考 github：https://github.com/poloclub/cnn-explainer/tree/master/tiny-vgg  
 以下講解若要自己訓練模型，匯入新的圖片，索引值的格式內容。
 - 要先做出下兩個 excel 檔案  
